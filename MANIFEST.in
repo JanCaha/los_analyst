@@ -1,0 +1,4 @@
+recursive-include losanalyst
+prune tests
+prune examples
+global-exclude *.py[co]

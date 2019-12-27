@@ -1,0 +1,5 @@
+markdown
+numpy
+nose
+gdal
+-e git://github.com/JanCaha/gdalhelpers.git
