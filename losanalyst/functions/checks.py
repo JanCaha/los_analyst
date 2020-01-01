@@ -204,9 +204,9 @@ def check_return_set_offset(offset: Union[str, int, float],
         If the field does not exist or if it is of non-numerical type.
     """
 
-    if not isinstance(default_offset, float):
-        raise ValueError("The `default_offset` variable is not either string or number. It is: `{0}`."
-                         .format(type(offset_name).__name__))
+    if not isinstance(default_offset, (float, int)):
+        raise ValueError("The `default_offset` variable is not either `int` or `float`. It is: `{0}`."
+                         .format(type(default_offset).__name__))
 
     if isinstance(offset, str):
         if not layer_checks.does_field_exist(layer, offset):
