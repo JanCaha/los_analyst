@@ -1,3 +1,6 @@
+"""
+This file only stores field names used through the package.
+"""
 # default values for the algorithm
 observer_id_field_name = "id_observer"
 target_id_field_name = "id_target"
