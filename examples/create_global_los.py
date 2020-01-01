@@ -14,16 +14,16 @@ observers = ogr.Open(os.path.join(PATH_TO_DATA,  "points.gpkg"))
 target = ogr.Open(os.path.join(PATH_TO_DATA, "single_point.gpkg"))
 
 global_los = create_global_los(dsm,
-                              observers,
-                              target,
-                              sample_distance=1,
-                              observer_offset=1.75,
-                              target_offset=0)
+                               observers,
+                               target,
+                               sample_distance=1,
+                               observer_offset=1.75,
+                               target_offset=0)
 
 ds_los = ogr.GetDriverByName("GPKG").CreateDataSource(os.path.join(PATH_TO_RESULTS, "global_los.gpkg"))
 ds_los.CopyLayer(global_los.GetLayer(), "los", ["OVERWRITE=YES"])
 
-ds_los = analyze_global_los(ds_los, use_curvature_corrections=True, refraction_coefficient=0.13)
+analyze_global_los(ds_los, use_curvature_corrections=True, refraction_coefficient=0.13)
 
 horizons = extract_horizons(global_los)
 ds_horizons = ogr.GetDriverByName("GPKG").CreateDataSource(os.path.join(PATH_TO_RESULTS, "global_los_horizons.gpkg"))

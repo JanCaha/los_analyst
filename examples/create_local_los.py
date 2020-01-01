@@ -23,7 +23,7 @@ local_los = create_local_los(dsm,
 ds_los = ogr.GetDriverByName("GPKG").CreateDataSource(os.path.join(PATH_TO_RESULTS, "local_los.gpkg"))
 ds_los.CopyLayer(local_los.GetLayer(), "los", ["OVERWRITE=YES"])
 
-ds_los = analyze_local_los(ds_los, use_curvature_corrections=True, refraction_coefficient=0.13)
+analyze_local_los(ds_los, use_curvature_corrections=True, refraction_coefficient=0.13)
 
 horizons = extract_horizons(local_los)
 ds_horizons = ogr.GetDriverByName("GPKG").CreateDataSource(os.path.join(PATH_TO_RESULTS, "local_los_horizons.gpkg"))
