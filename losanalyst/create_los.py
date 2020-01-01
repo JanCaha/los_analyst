@@ -240,7 +240,7 @@ def create_los(dsm: DEM,
     srs_checks.check_srs_projected(targets_srs, "targets")
 
     # check if SRS are the same
-    srs_checks.check_srs_are_same(observers_srs, targets_srs)
+    srs_checks.check_srs_are_same(observers_srs, "observers_srs", targets_srs, "targets_srs")
 
     # prepare output layer
     layer_helpers.create_layer_lines_25d(los_ds, observers_srs, "los")
@@ -255,7 +255,8 @@ def create_los(dsm: DEM,
     if los_without_target:
         helpers.create_notarget_los_fields(los_layer)
 
-        if not layer_checks.does_field_exist(targets_ds, target_definition_id_field):
+        if target_definition_id_field is not None and \
+                not layer_checks.does_field_exist(targets_layer, target_definition_id_field):
             ValueError("`target_definition_id_field` does not exist in `targets_ds`.")
 
     # get los feature defintion
