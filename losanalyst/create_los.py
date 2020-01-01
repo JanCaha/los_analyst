@@ -1,5 +1,4 @@
 from osgeo import gdal, ogr, osr
-import numbers
 import warnings
 from typing import Union
 from gdalhelpers.classes.DEM import DEM
@@ -10,13 +9,52 @@ from losanalyst.functions import checks, helpers
 
 
 def create_local_los(dsm: DEM,
-                     observers_ds: gdal.ogr.DataSource,
-                     targets_ds: gdal.ogr.DataSource,
+                     observers_ds: ogr.DataSource,
+                     targets_ds: ogr.DataSource,
                      sample_distance: float = None,
                      observer_id_field: str = None,
                      target_id_field: str = None,
-                     observer_offset: Union[str, numbers.Number] = 1.5,
-                     target_offset: Union[str, numbers.Number] = 0):
+                     observer_offset: Union[str, int, float] = 1.75,
+                     target_offset: Union[str, int, float] = 0):
+    """
+    Function for creation of local (between observers and targets) LoS.
+
+    Parameters
+    ----------
+    dsm : DEM
+        Raster data with digital surface model to construct the LoS on.
+
+    observers_ds : gdal.ogr.DataSource
+        Data source with layer containing observation points.
+
+    targets_ds : gdal.ogr.DataSource
+        Data source with layer containing target points.
+
+    sample_distance : float, optional
+        Sample distance to get elevation for LoS. Default value is `None` which means that it is estimated as pixel size
+        if `dsm`.
+
+    observer_id_field : str, optional
+        Name of field from `observers_ds` to get observer identification from. Default value is `None` which means that
+        `FID` (existing in GDAL/OGR) field is used.
+
+    target_id_field : str, optional
+        Name of field from `targets_ds` to get target identification from. Default value is `None` which means that
+        `FID` (existing in GDAL/OGR) field is used.
+
+    observer_offset : str or int or float, optional
+        Name of field from `observers_ds` to get observer offset from for each observer, or numerical value
+        specifying the offset. Default value is `1.75`.
+
+    target_offset : str or int or float, optional
+        Name of field from `targets_ds` to get target offset from for each target, or numerical value
+        specifying the offset. Default value is `0`.
+
+    Returns
+    -------
+    ogr.DataSource
+        Virtual `ogr.DataSource` in memory with one layer (named `los`) containing the lines.
+    """
 
     return create_los(dsm=dsm,
                       observers_ds=observers_ds,
@@ -31,13 +69,52 @@ def create_local_los(dsm: DEM,
 
 
 def create_global_los(dsm: DEM,
-                      observers_ds: gdal.ogr.DataSource,
-                      targets_ds: gdal.ogr.DataSource,
+                      observers_ds: ogr.DataSource,
+                      targets_ds: ogr.DataSource,
                       sample_distance: float = None,
                       observer_id_field: str = None,
                       target_id_field: str = None,
-                      observer_offset: Union[str, numbers.Number] = 1.5,
-                      target_offset: Union[str, numbers.Number] = 0):
+                      observer_offset: Union[str, int, float] = 1.75,
+                      target_offset: Union[str, int, float] = 0):
+    """
+    Function for creation of global (from observers trough targets and beyond them) LoS.
+
+    Parameters
+    ----------
+    dsm : DEM
+        Raster data with digital surface model to construct the LoS on.
+
+    observers_ds : gdal.ogr.DataSource
+        Data source with layer containing observation points.
+
+    targets_ds : gdal.ogr.DataSource
+        Data source with layer containing target points.
+
+    sample_distance : float, optional
+        Sample distance to get elevation for LoS. Default value is `None` which means that it is estimated as pixel size
+        if `dsm`.
+
+    observer_id_field : str, optional
+        Name of field from `observers_ds` to get observer identification from. Default value is `None` which means that
+        `FID` (existing in GDAL/OGR) field is used.
+
+    target_id_field : str, optional
+        Name of field from `targets_ds` to get target identification from. Default value is `None` which means that
+        `FID` (existing in GDAL/OGR) field is used.
+
+    observer_offset : str or int or float, optional
+        Name of field from `observers_ds` to get observer offset from for each observer, or numerical value
+        specifying the offset. Default value is `1.75`.
+
+    target_offset : str or int or float, optional
+        Name of field from `targets_ds` to get target offset from for each target, or numerical value
+        specifying the offset. Default value is `0`.
+
+    Returns
+    -------
+    ogr.DataSource
+        Virtual `ogr.DataSource` in memory with one layer (named `los`) containing the lines.
+    """
 
     return create_los(dsm=dsm,
                       observers_ds=observers_ds,
@@ -52,36 +129,76 @@ def create_global_los(dsm: DEM,
 
 
 def create_no_target_los(dsm: DEM,
-                         observers_ds: gdal.ogr.DataSource,
-                         targets_ds: gdal.ogr.DataSource,
+                         observers_ds: ogr.DataSource,
+                         points_ds: ogr.DataSource,
                          sample_distance: float = None,
                          observer_id_field: str = None,
-                         target_id_field: str = None,
-                         observer_offset: Union[str, numbers.Number] = 1.5,
-                         target_offset: Union[str, numbers.Number] = 0):
+                         points_id_field: str = None,
+                         target_definition_id_field: str = None,
+                         observer_offset: Union[str, int, float] = 1.75):
+    """
+    Function for creation of LoS without target (from observers through points and beyond them).
+
+    Parameters
+    ----------
+    dsm : DEM
+        Raster data with digital surface model to construct the LoS on.
+
+    observers_ds : gdal.ogr.DataSource
+        Data source with layer containing observation points.
+
+    points_ds : gdal.ogr.DataSource
+        Data source with layer containing points which specify direction of LoS.
+
+    sample_distance : float, optional
+        Sample distance to get elevation for LoS. Default value is `None` which means that it is estimated as pixel size
+        if `dsm`.
+
+    observer_id_field : str, optional
+        Name of field from `observers_ds` to get observer identification from. Default value is `None` which means that
+        `FID` (existing in GDAL/OGR) field is used.
+
+    points_id_field : str, optional
+        Name of field from `points_ds` to get target identification from. Default value is `None` which means that
+        `FID` (existing in GDAL/OGR) field is used.
+
+    target_definition_id_field : str, optional
+        Name of field from `points_ds` that specifies link between `observers_ds` and `points_ds` to construct LoS. Only
+        LoS where `target_definition_id_field` == `observer_id_field` are build.
+
+    observer_offset : str or int or float, optional
+        Name of field from `observers_ds` to get observer offset from for each observer, or numerical value
+        specifying the offset. Default value is `1.75`.
+
+    Returns
+    -------
+    ogr.DataSource
+        Virtual `ogr.DataSource` in memory with one layer (named `los`) containing the lines.
+    """
 
     return create_los(dsm=dsm,
                       observers_ds=observers_ds,
-                      targets_ds=targets_ds,
+                      targets_ds=points_ds,
                       sample_distance=sample_distance,
                       global_los=False,
                       los_without_target=True,
                       observer_id_field=observer_id_field,
-                      target_id_field=target_id_field,
-                      observer_offset=observer_offset,
-                      target_offset=target_offset)
+                      target_id_field=points_id_field,
+                      target_definition_id_field=target_definition_id_field,
+                      observer_offset=observer_offset)
 
 
 def create_los(dsm: DEM,
-               observers_ds: gdal.ogr.DataSource,
-               targets_ds: gdal.ogr.DataSource,
+               observers_ds: ogr.DataSource,
+               targets_ds: ogr.DataSource,
                sample_distance: float = None,
                global_los: bool = False,
                los_without_target: bool = False,
                observer_id_field: str = None,
                target_id_field: str = None,
-               observer_offset: Union[str, numbers.Number] = 1.5,
-               target_offset: Union[str, numbers.Number] = 0):
+               target_definition_id_field: str = None,
+               observer_offset: Union[str, int, float] = 1.75,
+               target_offset: Union[str, int, float] = 0):
 
     # create temp datasource to return
     los_ds = datasource_helpers.create_temp_gpkg_datasource()
@@ -112,7 +229,7 @@ def create_los(dsm: DEM,
     # check offsets
     observer_offset = checks.check_return_set_offset(observer_offset, "observer_offset",
                                                      observers_layer, "observers_ds",
-                                                     default_offset=1.5)
+                                                     default_offset=1.75)
 
     target_offset = checks.check_return_set_offset(target_offset, "target_offset",
                                                    targets_layer, "targets_ds",
@@ -126,7 +243,8 @@ def create_los(dsm: DEM,
     srs_checks.check_srs_are_same(observers_srs, targets_srs)
 
     # prepare output layer
-    los_layer = layer_helpers.create_layer_lines_25d(los_ds, observers_srs, "los")
+    layer_helpers.create_layer_lines_25d(los_ds, observers_srs, "los")
+    los_layer = los_ds.GetLayer()
 
     # add basic los fields
     helpers.create_basic_los_fields(los_layer)
@@ -136,6 +254,9 @@ def create_los(dsm: DEM,
 
     if los_without_target:
         helpers.create_notarget_los_fields(los_layer)
+
+        if not layer_checks.does_field_exist(targets_ds, target_definition_id_field):
+            ValueError("`target_definition_id_field` does not exist in `targets_ds`.")
 
     # get los feature defintion
     los_feature_defn = los_layer.GetLayerDefn()
@@ -158,6 +279,13 @@ def create_los(dsm: DEM,
             else:
                 t_offset = target_offset
 
+            observer_id_value = None
+
+            if observer_id_field is not None:
+                observer_id_value = observer_feature.GetField(observer_id_field)
+            else:
+                observer_id_value = observer_feature.GetFID()
+
             # create geometry of los, more complex for global los
             if global_los:
                 o_point = observer_feature.GetGeometryRef()
@@ -169,7 +297,7 @@ def create_los(dsm: DEM,
 
             elif los_without_target:
 
-                if observer_feature.GetFID() == target_feature.GetField("input_point_FID"):
+                if observer_id_value == target_feature.GetField(target_definition_id_field):
                     o_point = observer_feature.GetGeometryRef()
                     t_point = target_feature.GetGeometryRef()
                     angle = geometry_helpers.angle_points(o_point, t_point)
@@ -221,7 +349,7 @@ def create_los(dsm: DEM,
             layer_helpers.add_values_from_dict(los_feature, field_values)
 
             if los_without_target:
-                if observer_feature.GetFID() == target_feature.GetField("input_point_FID"):
+                if observer_id_value == target_feature.GetField(target_definition_id_field):
                     los_layer.CreateFeature(los_feature)
             else:
                 # add the feature to layer
