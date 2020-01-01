@@ -11,6 +11,25 @@ from losanalyst.classes.los_global import LoSGlobal
 def analyze_local_los(los_ds: ogr.DataSource,
                       use_curvature_corrections: bool = True,
                       refraction_coefficient: float = 0.13):
+    """
+    Analyze local LoS.
+
+    Parameters
+    ----------
+    los_ds : ogr.DataSource
+        Data source containing layer with LoS to analyze.
+
+    use_curvature_corrections : bool, optional
+        Calculate Earth curvature corrections while analyzing LoS. Default value is `True`.
+
+    refraction_coefficient : float, optional
+        Refraction coefficient. Default value is `0.13`.
+
+    Returns
+    -------
+    nothing
+        Fields are added to `los_ds`, nothing is returned from the function.
+    """
 
     datasource_checks.check_is_ogr_datasource(los_ds, "los_ds")
 
@@ -53,12 +72,29 @@ def analyze_local_los(los_ds: ogr.DataSource,
 
         los_layer.SetFeature(feature_los)
 
-    return los_ds
-
 
 def analyze_global_los(los_ds: ogr.DataSource,
                       use_curvature_corrections: bool = True,
                       refraction_coefficient: float = 0.13):
+    """
+    Analyze global LoS.
+
+    Parameters
+    ----------
+    los_ds : ogr.DataSource
+        Data source containing layer with LoS to analyze.
+
+    use_curvature_corrections : bool, optional
+        Calculate Earth curvature corrections while analyzing LoS. Default value is `True`.
+
+    refraction_coefficient : float, optional
+        Refraction coefficient. Default value is `0.13`.
+
+    Returns
+    -------
+    nothing
+        Fields are added to `los_ds`, nothing is returned from the function.
+    """
 
     datasource_checks.check_is_ogr_datasource(los_ds, "los_ds")
 
@@ -100,12 +136,30 @@ def analyze_global_los(los_ds: ogr.DataSource,
 
         los_layer.SetFeature(feature_los)
 
-    return los_ds
-
 
 def analyze_no_target_los(los_ds: ogr.DataSource,
                           use_curvature_corrections: bool = True,
                           refraction_coefficient: float = 0.13):
+    """
+    Analyze LoS without target.
+
+    Parameters
+    ----------
+    los_ds : ogr.DataSource
+        Data source containing layer with LoS to analyze.
+
+    use_curvature_corrections : bool, optional
+        Calculate Earth curvature corrections while analyzing LoS. Default value is `True`.
+
+    refraction_coefficient : float, optional
+        Refraction coefficient. Default value is `0.13`.
+
+    Returns
+    -------
+    nothing
+        Fields are added to `los_ds`, nothing is returned from the function.
+    """
+
     datasource_checks.check_is_ogr_datasource(los_ds, "los_ds")
 
     los_layer = los_ds.GetLayer()
@@ -140,8 +194,6 @@ def analyze_no_target_los(los_ds: ogr.DataSource,
 
         los_layer.SetFeature(feature_los)
 
-    return los_ds
-
 
 def analyze_los_type(los_ds: ogr.DataSource,
                      use_curvature_corrections: bool = True,
@@ -158,14 +210,14 @@ def analyze_los_type(los_ds: ogr.DataSource,
     los_without_target = checks.is_los_without_target(los_layer)
 
     if los_global:
-        return analyze_global_los(los_ds,
-                                  use_curvature_corrections=use_curvature_corrections,
-                                  refraction_coefficient=refraction_coefficient)
+        analyze_global_los(los_ds,
+                           use_curvature_corrections=use_curvature_corrections,
+                           refraction_coefficient=refraction_coefficient)
     elif los_without_target:
-        return analyze_no_target_los(los_ds,
-                                     use_curvature_corrections=use_curvature_corrections,
-                                     refraction_coefficient=refraction_coefficient)
+        analyze_no_target_los(los_ds,
+                              use_curvature_corrections=use_curvature_corrections,
+                              refraction_coefficient=refraction_coefficient)
     else:
-        return analyze_local_los(los_ds,
-                                 use_curvature_corrections=use_curvature_corrections,
-                                 refraction_coefficient=refraction_coefficient)
+        analyze_local_los(los_ds,
+                          use_curvature_corrections=use_curvature_corrections,
+                          refraction_coefficient=refraction_coefficient)
