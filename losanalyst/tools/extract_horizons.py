@@ -104,7 +104,8 @@ def extract_global_horizon(los_ds: ogr.DataSource,
     los_global = checks.is_global_los_layer(los_layer)
     los_without_target = checks.is_los_without_target(los_layer)
 
-    horizons_layer = layer_helpers.create_layer_points_25d(horizons_ds, los_layer.GetSpatialRef(), "horizons")
+    layer_helpers.create_layer_points_25d(horizons_ds, los_layer.GetSpatialRef(), "horizons")
+    horizons_layer = horizons_ds.GetLayer()
 
     fields_types = {field_names.observer_id_field_name: ogr.OFTInteger,
                     field_names.target_id_field_name: ogr.OFTInteger}
