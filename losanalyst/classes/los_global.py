@@ -121,13 +121,13 @@ class LoSGlobal(LoS):
 
     def get_horizon_count(self) -> int:
         """
-        Get the number of horizons on LoS.
+        Get the number of horizons behind target on LoS.
 
         Returns
         -------
         int
         """
-        return math.fsum(self.horizon[self.target_index+1:])
+        return int(math.fsum(self.horizon[self.target_index+1:]))
 
     def __get_global_horizon_index(self) -> int:
         """
@@ -163,7 +163,7 @@ class LoSGlobal(LoS):
 
         return self._get_geom_at_index(index)
 
-    def __get_max_local_horizon_index(self) -> int:
+    def _get_max_local_horizon_index(self) -> int:
         """
         Get index of maximal local horizon (between observer and target) from `horizon`.
 
@@ -176,7 +176,7 @@ class LoSGlobal(LoS):
         index = None
 
         for i in range(self.target_index-1, -1, -1):
-            if self.horizon[i]:
+            if self.horizon[i] and i != self.target_index:
                 index = i
                 break
 
@@ -190,7 +190,7 @@ class LoSGlobal(LoS):
         -------
         ogr.Geometry
         """
-        index = self.__get_max_local_horizon_index()
+        index = self._get_max_local_horizon_index()
 
         if index is None:
             index = self.target_index
