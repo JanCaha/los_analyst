@@ -1,9 +1,9 @@
 from osgeo import ogr
 import os
 from gdalhelpers.classes.DEM import DEM
-from losanalyst.create_los import create_local_los
-from losanalyst.analyze_los import analyze_local_los
-from losanalyst.extract_horizons import extract_horizons, extract_global_horizon
+from losanalyst import create_local_los
+from losanalyst import analyze_local_los
+from losanalyst import extract_horizons
 
 PATH_TO_DATA = os.path.join(os.path.dirname(__file__), "..", "tests", "test_data")
 PATH_TO_RESULTS = os.path.join(PATH_TO_DATA, "results")

@@ -2,8 +2,8 @@ from osgeo import ogr
 import os
 from gdalhelpers.classes.DEM import DEM
 from gdalhelpers.functions.create_points_at_angles_distance_in_direction import create_points_at_angles_distance_in_direction
-from losanalyst.create_los import create_no_target_los
-from losanalyst.analyze_los import analyze_no_target_los
+from losanalyst import create_no_target_los
+from losanalyst import analyze_no_target_los
 
 PATH_TO_DATA = os.path.join(os.path.dirname(__file__), "..", "tests", "test_data")
 PATH_TO_RESULTS = os.path.join(PATH_TO_DATA, "results")
