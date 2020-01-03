@@ -1,14 +1,14 @@
 # pylint: skip-file
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(name='losanalyst',
-      version='0.1',
+      version='0.2.0',
       description='Line-of-Sight Analyst package',
       url='https://github.com/JanCaha/los_analyst',
       author='Jan Caha',
       author_email='jan.caha@outlook.com',
       license='MIT',
-      packages=['losanalyst'],
+      packages=find_packages(),
       install_requires=[
           'markdown',
           'gdal',
