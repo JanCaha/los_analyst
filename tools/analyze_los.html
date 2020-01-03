@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.2" />
+<title>losanalyst.tools.analyze_los API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>losanalyst.tools.analyze_los</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from osgeo import ogr
+from gdalhelpers.helpers import geometry_helpers, layer_helpers, datasource_helpers
+from gdalhelpers.checks import values_checks, layer_checks, datasource_checks
+import losanalyst.functions.los_field_names as field_names
+from losanalyst.functions import checks, helpers
+from losanalyst.classes.los_local import LoSLocal
+from losanalyst.classes.los_without_target import LoSWithoutTarget
+from losanalyst.classes.los_global import LoSGlobal
+
+
+def analyze_local_los(los_ds: ogr.DataSource,
+                      use_curvature_corrections: bool = True,
+                      refraction_coefficient: float = 0.13):
+    &#34;&#34;&#34;
+    Analyze local LoS.
+
+    Parameters
+    ----------
+    los_ds : ogr.DataSource
+        Data source containing layer with LoS to analyze.
+
+    use_curvature_corrections : bool, optional
+        Calculate Earth curvature corrections while analyzing LoS. Default value is `True`.
+
+    refraction_coefficient : float, optional
+        Refraction coefficient. Default value is `0.13`.
+
+    Returns
+    -------
+    nothing
+        Fields are added to `los_ds`, nothing is returned from the function.
+    &#34;&#34;&#34;
+
+    datasource_checks.check_is_ogr_datasource(los_ds, &#34;los_ds&#34;)
+
+    los_layer = los_ds.GetLayer()
+
+    checks.check_los_layer(los_layer)
+
+    if checks.is_global_los_layer(los_layer) or checks.is_los_without_target(los_layer):
+        raise TypeError(&#34;`los_ds` is not a local line-of-sight. Cannot analyze it like local LoS.&#34;)
+
+    helpers.create_local_los_analyze_fields(los_layer)
+
+    for feature_los in los_layer:
+
+        geom = feature_los.GetGeometryRef()
+        points = helpers.wkt_to_list(geom.ExportToWkt())
+
+        o_offset = feature_los.GetField(field_names.observer_offset_field_name)
+        t_offset = feature_los.GetField(field_names.target_offset_field_name)
+
+        los = LoSLocal(points,
+                       observer_offset=o_offset,
+                       target_offset=t_offset,
+                       use_curvature_corrections=use_curvature_corrections,
+                       refraction_coefficient=refraction_coefficient)
+
+        los_layer.SetFeature(feature_los)
+
+        fields_values = {field_names.visible_fn: los.is_target_visible(),
+                         field_names.view_angle_fn: los.get_view_angle(),
+                         field_names.elevation_difference_fn: los.get_elevation_difference(),
+                         field_names.angle_difference_horizon_fn: los.get_angle_difference_local_horizon(),
+                         field_names.elevation_difference_horizon_fn: los.get_elevation_difference_local_horizon(),
+                         field_names.slope_difference_fn: los.get_los_slope_difference(),
+                         field_names.horizon_count_fn: los.get_local_horizon_count(),
+                         field_names.local_horizon_distance_fn: los.get_local_horizon_distance(),
+                         field_names.fuzzy_visibility_fn: los.get_fuzzy_visibility()}
+
+        layer_helpers.add_values_from_dict(feature_los, fields_values)
+
+        los_layer.SetFeature(feature_los)
+
+
+def analyze_global_los(los_ds: ogr.DataSource,
+                      use_curvature_corrections: bool = True,
+                      refraction_coefficient: float = 0.13):
+    &#34;&#34;&#34;
+    Analyze global LoS.
+
+    Parameters
+    ----------
+    los_ds : ogr.DataSource
+        Data source containing layer with LoS to analyze.
+
+    use_curvature_corrections : bool, optional
+        Calculate Earth curvature corrections while analyzing LoS. Default value is `True`.
+
+    refraction_coefficient : float, optional
+        Refraction coefficient. Default value is `0.13`.
+
+    Returns
+    -------
+    nothing
+        Fields are added to `los_ds`, nothing is returned from the function.
+    &#34;&#34;&#34;
+
+    datasource_checks.check_is_ogr_datasource(los_ds, &#34;los_ds&#34;)
+
+    los_layer = los_ds.GetLayer()
+
+    checks.check_los_layer(los_layer)
+
+    if not checks.is_global_los_layer(los_layer) :
+        raise TypeError(&#34;`los_ds` is not a global line-of-sight. Cannot analyze it like global LoS.&#34;)
+
+    helpers.create_global_los_analyze_fields(los_layer)
+
+    for feature_los in los_layer:
+
+        geom = feature_los.GetGeometryRef()
+        points = helpers.wkt_to_list(geom.ExportToWkt())
+
+        o_offset = feature_los.GetField(field_names.observer_offset_field_name)
+        t_offset = feature_los.GetField(field_names.target_offset_field_name)
+
+        tx = feature_los.GetField(field_names.tp_x_field_name)
+        ty = feature_los.GetField(field_names.tp_y_field_name)
+        los = LoSGlobal(points,
+                        observer_offset=o_offset,
+                        target_offset=t_offset,
+                        target_x=tx,
+                        target_y=ty,
+                        use_curvature_corrections=use_curvature_corrections,
+                        refraction_coefficient=refraction_coefficient)
+
+        los_layer.SetFeature(feature_los)
+
+        fields_values = {field_names.visible_fn: los.get_visible(),
+                         field_names.angle_difference_global_horizon_fn: los.get_angle_difference_global_horizon(),
+                         field_names.elevation_difference_global_horizon_fn: los.get_elevation_difference_global_horizon(),
+                         field_names.horizon_count_behind_fn: los.get_horizon_count()}
+
+        layer_helpers.add_values_from_dict(feature_los, fields_values)
+
+        los_layer.SetFeature(feature_los)
+
+
+def analyze_no_target_los(los_ds: ogr.DataSource,
+                          use_curvature_corrections: bool = True,
+                          refraction_coefficient: float = 0.13):
+    &#34;&#34;&#34;
+    Analyze LoS without target.
+
+    Parameters
+    ----------
+    los_ds : ogr.DataSource
+        Data source containing layer with LoS to analyze.
+
+    use_curvature_corrections : bool, optional
+        Calculate Earth curvature corrections while analyzing LoS. Default value is `True`.
+
+    refraction_coefficient : float, optional
+        Refraction coefficient. Default value is `0.13`.
+
+    Returns
+    -------
+    nothing
+        Fields are added to `los_ds`, nothing is returned from the function.
+    &#34;&#34;&#34;
+
+    datasource_checks.check_is_ogr_datasource(los_ds, &#34;los_ds&#34;)
+
+    los_layer = los_ds.GetLayer()
+
+    checks.check_los_layer(los_layer)
+
+    if not checks.is_los_without_target(los_layer):
+        raise TypeError(&#34;`los_ds` is not line-of-sight without target. Cannot analyze it like LoS without targer.&#34;)
+
+    helpers.create_notarget_los_analyze_fields(los_layer)
+
+    for feature_los in los_layer:
+
+        geom = feature_los.GetGeometryRef()
+        points = helpers.wkt_to_list(geom.ExportToWkt())
+
+        o_offset = feature_los.GetField(field_names.observer_offset_field_name)
+
+        los = LoSWithoutTarget(points,
+                               observer_offset=o_offset,
+                               use_curvature_corrections=use_curvature_corrections,
+                               refraction_coefficient=refraction_coefficient)
+
+        los_layer.SetFeature(feature_los)
+
+        fields_values = {field_names.global_horizont_distance_fn: los.get_global_horizon_distance(),
+                         field_names.vertical_angle_fn: los.get_maximal_vertical_angle(),
+                         field_names.local_horizon_angle_fn: los.get_max_local_horizon_angle(),
+                         field_names.local_horizon_distance_fn: los.get_local_horizon_distance()}
+
+        layer_helpers.add_values_from_dict(feature_los, fields_values)
+
+        los_layer.SetFeature(feature_los)
+
+
+def analyze_los_type(los_ds: ogr.DataSource,
+                     use_curvature_corrections: bool = True,
+                     refraction_coefficient: float = 0.13):
+
+    datasource_checks.check_is_ogr_datasource(los_ds, &#34;los_ds&#34;)
+
+    los_layer = los_ds.GetLayer()
+
+    checks.check_is_los_layer(los_layer)
+
+    # check type of the layer
+    los_global = checks.is_global_los_layer(los_layer)
+    los_without_target = checks.is_los_without_target(los_layer)
+
+    if los_global:
+        analyze_global_los(los_ds,
+                           use_curvature_corrections=use_curvature_corrections,
+                           refraction_coefficient=refraction_coefficient)
+    elif los_without_target:
+        analyze_no_target_los(los_ds,
+                              use_curvature_corrections=use_curvature_corrections,
+                              refraction_coefficient=refraction_coefficient)
+    else:
+        analyze_local_los(los_ds,
+                          use_curvature_corrections=use_curvature_corrections,
+                          refraction_coefficient=refraction_coefficient)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="losanalyst.tools.analyze_los.analyze_global_los"><code class="name flex">
+<span>def <span class="ident">analyze_global_los</span></span>(<span>los_ds, use_curvature_corrections=True, refraction_coefficient=0.13)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Analyze global LoS.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>los_ds</code></strong> :&ensp;<code>ogr.DataSource</code></dt>
+<dd>Data source containing layer with LoS to analyze.</dd>
+<dt><strong><code>use_curvature_corrections</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Calculate Earth curvature corrections while analyzing LoS. Default value is <code>True</code>.</dd>
+<dt><strong><code>refraction_coefficient</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>Refraction coefficient. Default value is <code>0.13</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>nothing</code></dt>
+<dd>Fields are added to <code>los_ds</code>, nothing is returned from the function.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def analyze_global_los(los_ds: ogr.DataSource,
+                      use_curvature_corrections: bool = True,
+                      refraction_coefficient: float = 0.13):
+    &#34;&#34;&#34;
+    Analyze global LoS.
+
+    Parameters
+    ----------
+    los_ds : ogr.DataSource
+        Data source containing layer with LoS to analyze.
+
+    use_curvature_corrections : bool, optional
+        Calculate Earth curvature corrections while analyzing LoS. Default value is `True`.
+
+    refraction_coefficient : float, optional
+        Refraction coefficient. Default value is `0.13`.
+
+    Returns
+    -------
+    nothing
+        Fields are added to `los_ds`, nothing is returned from the function.
+    &#34;&#34;&#34;
+
+    datasource_checks.check_is_ogr_datasource(los_ds, &#34;los_ds&#34;)
+
+    los_layer = los_ds.GetLayer()
+
+    checks.check_los_layer(los_layer)
+
+    if not checks.is_global_los_layer(los_layer) :
+        raise TypeError(&#34;`los_ds` is not a global line-of-sight. Cannot analyze it like global LoS.&#34;)
+
+    helpers.create_global_los_analyze_fields(los_layer)
+
+    for feature_los in los_layer:
+
+        geom = feature_los.GetGeometryRef()
+        points = helpers.wkt_to_list(geom.ExportToWkt())
+
+        o_offset = feature_los.GetField(field_names.observer_offset_field_name)
+        t_offset = feature_los.GetField(field_names.target_offset_field_name)
+
+        tx = feature_los.GetField(field_names.tp_x_field_name)
+        ty = feature_los.GetField(field_names.tp_y_field_name)
+        los = LoSGlobal(points,
+                        observer_offset=o_offset,
+                        target_offset=t_offset,
+                        target_x=tx,
+                        target_y=ty,
+                        use_curvature_corrections=use_curvature_corrections,
+                        refraction_coefficient=refraction_coefficient)
+
+        los_layer.SetFeature(feature_los)
+
+        fields_values = {field_names.visible_fn: los.get_visible(),
+                         field_names.angle_difference_global_horizon_fn: los.get_angle_difference_global_horizon(),
+                         field_names.elevation_difference_global_horizon_fn: los.get_elevation_difference_global_horizon(),
+                         field_names.horizon_count_behind_fn: los.get_horizon_count()}
+
+        layer_helpers.add_values_from_dict(feature_los, fields_values)
+
+        los_layer.SetFeature(feature_los)</code></pre>
+</details>
+</dd>
+<dt id="losanalyst.tools.analyze_los.analyze_local_los"><code class="name flex">
+<span>def <span class="ident">analyze_local_los</span></span>(<span>los_ds, use_curvature_corrections=True, refraction_coefficient=0.13)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Analyze local LoS.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>los_ds</code></strong> :&ensp;<code>ogr.DataSource</code></dt>
+<dd>Data source containing layer with LoS to analyze.</dd>
+<dt><strong><code>use_curvature_corrections</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Calculate Earth curvature corrections while analyzing LoS. Default value is <code>True</code>.</dd>
+<dt><strong><code>refraction_coefficient</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>Refraction coefficient. Default value is <code>0.13</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>nothing</code></dt>
+<dd>Fields are added to <code>los_ds</code>, nothing is returned from the function.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def analyze_local_los(los_ds: ogr.DataSource,
+                      use_curvature_corrections: bool = True,
+                      refraction_coefficient: float = 0.13):
+    &#34;&#34;&#34;
+    Analyze local LoS.
+
+    Parameters
+    ----------
+    los_ds : ogr.DataSource
+        Data source containing layer with LoS to analyze.
+
+    use_curvature_corrections : bool, optional
+        Calculate Earth curvature corrections while analyzing LoS. Default value is `True`.
+
+    refraction_coefficient : float, optional
+        Refraction coefficient. Default value is `0.13`.
+
+    Returns
+    -------
+    nothing
+        Fields are added to `los_ds`, nothing is returned from the function.
+    &#34;&#34;&#34;
+
+    datasource_checks.check_is_ogr_datasource(los_ds, &#34;los_ds&#34;)
+
+    los_layer = los_ds.GetLayer()
+
+    checks.check_los_layer(los_layer)
+
+    if checks.is_global_los_layer(los_layer) or checks.is_los_without_target(los_layer):
+        raise TypeError(&#34;`los_ds` is not a local line-of-sight. Cannot analyze it like local LoS.&#34;)
+
+    helpers.create_local_los_analyze_fields(los_layer)
+
+    for feature_los in los_layer:
+
+        geom = feature_los.GetGeometryRef()
+        points = helpers.wkt_to_list(geom.ExportToWkt())
+
+        o_offset = feature_los.GetField(field_names.observer_offset_field_name)
+        t_offset = feature_los.GetField(field_names.target_offset_field_name)
+
+        los = LoSLocal(points,
+                       observer_offset=o_offset,
+                       target_offset=t_offset,
+                       use_curvature_corrections=use_curvature_corrections,
+                       refraction_coefficient=refraction_coefficient)
+
+        los_layer.SetFeature(feature_los)
+
+        fields_values = {field_names.visible_fn: los.is_target_visible(),
+                         field_names.view_angle_fn: los.get_view_angle(),
+                         field_names.elevation_difference_fn: los.get_elevation_difference(),
+                         field_names.angle_difference_horizon_fn: los.get_angle_difference_local_horizon(),
+                         field_names.elevation_difference_horizon_fn: los.get_elevation_difference_local_horizon(),
+                         field_names.slope_difference_fn: los.get_los_slope_difference(),
+                         field_names.horizon_count_fn: los.get_local_horizon_count(),
+                         field_names.local_horizon_distance_fn: los.get_local_horizon_distance(),
+                         field_names.fuzzy_visibility_fn: los.get_fuzzy_visibility()}
+
+        layer_helpers.add_values_from_dict(feature_los, fields_values)
+
+        los_layer.SetFeature(feature_los)</code></pre>
+</details>
+</dd>
+<dt id="losanalyst.tools.analyze_los.analyze_los_type"><code class="name flex">
+<span>def <span class="ident">analyze_los_type</span></span>(<span>los_ds, use_curvature_corrections=True, refraction_coefficient=0.13)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def analyze_los_type(los_ds: ogr.DataSource,
+                     use_curvature_corrections: bool = True,
+                     refraction_coefficient: float = 0.13):
+
+    datasource_checks.check_is_ogr_datasource(los_ds, &#34;los_ds&#34;)
+
+    los_layer = los_ds.GetLayer()
+
+    checks.check_is_los_layer(los_layer)
+
+    # check type of the layer
+    los_global = checks.is_global_los_layer(los_layer)
+    los_without_target = checks.is_los_without_target(los_layer)
+
+    if los_global:
+        analyze_global_los(los_ds,
+                           use_curvature_corrections=use_curvature_corrections,
+                           refraction_coefficient=refraction_coefficient)
+    elif los_without_target:
+        analyze_no_target_los(los_ds,
+                              use_curvature_corrections=use_curvature_corrections,
+                              refraction_coefficient=refraction_coefficient)
+    else:
+        analyze_local_los(los_ds,
+                          use_curvature_corrections=use_curvature_corrections,
+                          refraction_coefficient=refraction_coefficient)</code></pre>
+</details>
+</dd>
+<dt id="losanalyst.tools.analyze_los.analyze_no_target_los"><code class="name flex">
+<span>def <span class="ident">analyze_no_target_los</span></span>(<span>los_ds, use_curvature_corrections=True, refraction_coefficient=0.13)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Analyze LoS without target.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>los_ds</code></strong> :&ensp;<code>ogr.DataSource</code></dt>
+<dd>Data source containing layer with LoS to analyze.</dd>
+<dt><strong><code>use_curvature_corrections</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Calculate Earth curvature corrections while analyzing LoS. Default value is <code>True</code>.</dd>
+<dt><strong><code>refraction_coefficient</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>Refraction coefficient. Default value is <code>0.13</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>nothing</code></dt>
+<dd>Fields are added to <code>los_ds</code>, nothing is returned from the function.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def analyze_no_target_los(los_ds: ogr.DataSource,
+                          use_curvature_corrections: bool = True,
+                          refraction_coefficient: float = 0.13):
+    &#34;&#34;&#34;
+    Analyze LoS without target.
+
+    Parameters
+    ----------
+    los_ds : ogr.DataSource
+        Data source containing layer with LoS to analyze.
+
+    use_curvature_corrections : bool, optional
+        Calculate Earth curvature corrections while analyzing LoS. Default value is `True`.
+
+    refraction_coefficient : float, optional
+        Refraction coefficient. Default value is `0.13`.
+
+    Returns
+    -------
+    nothing
+        Fields are added to `los_ds`, nothing is returned from the function.
+    &#34;&#34;&#34;
+
+    datasource_checks.check_is_ogr_datasource(los_ds, &#34;los_ds&#34;)
+
+    los_layer = los_ds.GetLayer()
+
+    checks.check_los_layer(los_layer)
+
+    if not checks.is_los_without_target(los_layer):
+        raise TypeError(&#34;`los_ds` is not line-of-sight without target. Cannot analyze it like LoS without targer.&#34;)
+
+    helpers.create_notarget_los_analyze_fields(los_layer)
+
+    for feature_los in los_layer:
+
+        geom = feature_los.GetGeometryRef()
+        points = helpers.wkt_to_list(geom.ExportToWkt())
+
+        o_offset = feature_los.GetField(field_names.observer_offset_field_name)
+
+        los = LoSWithoutTarget(points,
+                               observer_offset=o_offset,
+                               use_curvature_corrections=use_curvature_corrections,
+                               refraction_coefficient=refraction_coefficient)
+
+        los_layer.SetFeature(feature_los)
+
+        fields_values = {field_names.global_horizont_distance_fn: los.get_global_horizon_distance(),
+                         field_names.vertical_angle_fn: los.get_maximal_vertical_angle(),
+                         field_names.local_horizon_angle_fn: los.get_max_local_horizon_angle(),
+                         field_names.local_horizon_distance_fn: los.get_local_horizon_distance()}
+
+        layer_helpers.add_values_from_dict(feature_los, fields_values)
+
+        los_layer.SetFeature(feature_los)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="losanalyst.tools" href="index.html">losanalyst.tools</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="losanalyst.tools.analyze_los.analyze_global_los" href="#losanalyst.tools.analyze_los.analyze_global_los">analyze_global_los</a></code></li>
+<li><code><a title="losanalyst.tools.analyze_los.analyze_local_los" href="#losanalyst.tools.analyze_los.analyze_local_los">analyze_local_los</a></code></li>
+<li><code><a title="losanalyst.tools.analyze_los.analyze_los_type" href="#losanalyst.tools.analyze_los.analyze_los_type">analyze_los_type</a></code></li>
+<li><code><a title="losanalyst.tools.analyze_los.analyze_no_target_los" href="#losanalyst.tools.analyze_los.analyze_no_target_los">analyze_no_target_los</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.2</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
