@@ -2,4 +2,4 @@ markdown
 numpy
 nose
 gdal
--e git://github.com/JanCaha/gdalhelpers.git
+-e git://github.com/JanCaha/gdalhelpers.git#egg=losanalyst
