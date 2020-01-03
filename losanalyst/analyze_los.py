@@ -58,7 +58,7 @@ def analyze_local_los(los_ds: ogr.DataSource,
 
         los_layer.SetFeature(feature_los)
 
-        fields_values = {field_names.visible_fn: los.get_visible(),
+        fields_values = {field_names.visible_fn: los.is_target_visible(),
                          field_names.view_angle_fn: los.get_view_angle(),
                          field_names.elevation_difference_fn: los.get_elevation_difference(),
                          field_names.angle_difference_horizon_fn: los.get_angle_difference_local_horizon(),
